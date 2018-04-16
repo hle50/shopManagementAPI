@@ -9,6 +9,7 @@ const { MONGOOSE_SECRET } = require('./api/utils/utils');
 // const orderRoutes = require("./api/routes/orders");
 // const uploadRoutes = require("./api/routes/upload");
 const userRoutes = require("./api/routes/user");
+const productRoutes = require("./api/routes/product");
 
 mongoose.connect(`mongodb://hoale:${MONGOOSE_SECRET}@node-rest-api-shard-00-00-zjw5o.mongodb.net:27017,node-rest-api-shard-00-01-zjw5o.mongodb.net:27017,node-rest-api-shard-00-02-zjw5o.mongodb.net:27017/test?ssl=true&replicaSet=node-rest-api-shard-0&authSource=admin`,
   {
@@ -38,6 +39,7 @@ app.use((req, res, next) => {
 // app.use("/products", productRoutes);
 // app.use("/orders", orderRoutes);
 app.use("/user", userRoutes);
+app.use("/product", productRoutes);
 
 
 app.use((req, res, next) => {

@@ -3,7 +3,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../utils/utils');
 
-exports.createUser = (req, res, next) => {
+exports.createUser = (req, res) => {
   const { email, fullName, avatarUrl, password } = req.body;
 // check if email existed
   User.find({ email })
@@ -47,7 +47,7 @@ exports.createUser = (req, res, next) => {
     });
 };
 
-exports.login = (req, res, next) => {
+exports.login = (req, res) => {
   const { email, password } = req.body;
   User.find({ email })
     .exec()
@@ -80,7 +80,7 @@ exports.login = (req, res, next) => {
     })
 };
 
-exports.updateUser = (req, res, next) => {
+exports.updateUser = (req, res) => {
   // get user id from token
   const userId = req.userData.userId;
   const { fullName, phone, avatarUrl } = req.body;
@@ -102,7 +102,7 @@ exports.updateUser = (req, res, next) => {
     })
 };
 
-exports.getAllUser = (req, res, next)=>{
+exports.getAllUser = (req, res)=>{
   User.find({})
     .exec()
     .then(result =>{
