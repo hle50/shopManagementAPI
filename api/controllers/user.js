@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../utils/utils')
+const { JWT_SECRET } = require('../utils/utils');
+
 exports.createUser = (req, res, next) => {
   const { email, fullName, avatarUrl, password } = req.body;
 // check if email existed
@@ -11,7 +12,7 @@ exports.createUser = (req, res, next) => {
       console.log(user);
       if (user.length >= 1) {
         return res.status(409).json({
-          message: 'Email existed'
+          message: 'Email existed',
         })
       }
       else {
@@ -32,12 +33,12 @@ exports.createUser = (req, res, next) => {
             user.save()
               .then(result => {
                 res.status(201).json(({
-                  message: 'User created successful'
+                  message: 'User created successful',
                 }))
               })
               .catch(err => {
                 res.status(500).json({
-                  error: err
+                  error: err,
                 })
               })
           }
@@ -53,28 +54,67 @@ exports.login = (req, res, next) => {
     .then(user => {
       if (user.length < 1) {
         return res.status(401).json({
-          message: 'Auth failed'
+          message: 'Auth failed',
         })
       }
-      bcrypt.compare(password, user[ 0 ].password, (err, result) => {
+      bcrypt.compare(password, user[0].password, (err, result) => {
         if (result) {
           const token = jwt.sign(
             {
               email,
-              userId: user[ 0 ].userId,
+              userId: user[0]._id,
             },
             JWT_SECRET,
             {
-              expiresIn: "24h"
+              expiresIn: "24h",
             });
           return res.status(200).json({
             message: 'Auth successful',
-            token
+            token,
           })
         }
         return res.status(401).json({
-          message: 'Auth failed'
+          message: 'Auth failed',
         })
       })
     })
 };
+
+exports.updateUser = (req, res, next) => {
+  // get user id from token
+  const userId = req.userData.userId;
+  const { fullName, phone, avatarUrl } = req.body;
+  console.log(req.userData)
+  User.update({ _id: userId }, { $set: {fullName, phone, avatarUrl} })
+    .exec()
+    .then(result => {
+      if (result) {
+        // do update user
+        return res.status(200).json({
+          message: 'Update user successful',
+        })
+      }
+    })
+    .catch(error => {
+      return res.status(500).json({
+        error,
+      })
+    })
+};
+
+exports.getAllUser = (req, res, next)=>{
+  User.find({})
+    .exec()
+    .then(result =>{
+      return res.status(200).json({
+        message: 'Update user successful',
+        data: result,
+      })
+    })
+    .catch(error => {
+      return res.status(500).json({
+        error,
+      })
+    })
+
+}

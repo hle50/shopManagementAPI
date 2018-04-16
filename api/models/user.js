@@ -16,13 +16,13 @@ const userSchema = mongoose.Schema({
   },
   fullName: {
     type: String,
-    required: [ true, 'Fullname is required' ],
+    required: [ true, 'Full name is required' ],
   },
   phone: {
     type: String,
   },
   avatarUrl: {
-    type: String,
+      type: String,
   },
   active: {
     type: Boolean,
