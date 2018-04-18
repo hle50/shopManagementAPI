@@ -1,20 +1,22 @@
-const Product = require('../models/product');
+const Order = require('../models/order');
 
-// insert product
-exports.createProduct = (req, res) => {
-  console.log(req);
-  const { name, price, quantity, imageUrl } = req.body;
-  const product = new Product({
-    name,
-    price,
-    quantity,
-    imageUrl,
+// insert Order
+exports.createOrder = (req, res) => {
+  console.log(req.body);
+  const { fullName, phone, client, shipTo, products } = req.body;
+  const order = new Order({
+    fullName,
+    phone,
+    shipTo,
+    client,
+    products,
     user: req.userData.userId,
   });
-  product.save()
+  order.save()
     .then(result => {
       res.status(200).json({
-        message: 'Product created successful'
+        message: 'Order created successful',
+        result
       })
     })
     .catch(error => {
@@ -24,11 +26,12 @@ exports.createProduct = (req, res) => {
     })
 };
 
-// get Product by Id
+// get Order by Id
 
-exports.getProductById = (req, res) => {
+exports.getOrderById = (req, res) => {
   const _id = req.params.id;
-  Product.findById(_id)
+  Order.findById(_id)
+    .populate("products.product", "name imageUrl")
     .exec()
     .then(result => {
       res.status(200).json({
@@ -42,11 +45,12 @@ exports.getProductById = (req, res) => {
     })
 }
 
-// get all product
+// get all Order
 
 exports.getAll = (req, res) => {
   const user = req.userData.userId;
-  Product.find({ user })
+  Order.find({ user })
+    .populate("products.product", "name imageUrl")
     .exec()
     .then(result => {
       res.status(200).json({
@@ -60,12 +64,12 @@ exports.getAll = (req, res) => {
     })
 };
 
-// update product
+// update Order
 
-exports.updateProduct = (req, res) => {
+exports.updateOrder = (req, res) => {
   const id = req.params.id;
   const { name, price, quantity, imageUrl } = req.body;
-  Product.findByIdAndUpdate(id, { name, price, quantity, imageUrl }, { new: true })
+  Order.findByIdAndUpdate(id, { name, price, quantity, imageUrl }, { new: true })
     .exec()
     .then(result => {
       res.status(200).json({
@@ -83,7 +87,7 @@ exports.updateProduct = (req, res) => {
 // delete
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Product.findByIdAndRemove(id)
+  Order.findByIdAndRemove(id)
     .exec()
     .then(result => {
       res.status(200).json({

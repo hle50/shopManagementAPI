@@ -1,20 +1,21 @@
-const Product = require('../models/product');
+const Client = require('../models/client');
 
 // insert product
-exports.createProduct = (req, res) => {
+exports.createClient = (req, res) => {
   console.log(req);
-  const { name, price, quantity, imageUrl } = req.body;
-  const product = new Product({
-    name,
-    price,
-    quantity,
-    imageUrl,
-    user: req.userData.userId,
+  const { fullName, phone, avatarUrl, note, address } = req.body;
+  const client = new Client({
+    fullName,
+    phone,
+    avatarUrl,
+    note,
+    address,
+    owner: req.userData.userId,
   });
-  product.save()
+  client.save()
     .then(result => {
       res.status(200).json({
-        message: 'Product created successful'
+        message: 'Client created successful'
       })
     })
     .catch(error => {
@@ -24,11 +25,11 @@ exports.createProduct = (req, res) => {
     })
 };
 
-// get Product by Id
+// get Client by Id
 
-exports.getProductById = (req, res) => {
+exports.getClientById = (req, res) => {
   const _id = req.params.id;
-  Product.findById(_id)
+  Client.findById(_id)
     .exec()
     .then(result => {
       res.status(200).json({
@@ -40,13 +41,13 @@ exports.getProductById = (req, res) => {
         error
       })
     })
-}
+};
 
-// get all product
+// get all client
 
 exports.getAll = (req, res) => {
-  const user = req.userData.userId;
-  Product.find({ user })
+  const owner = req.userData.userId;
+  Client.find({ owner })
     .exec()
     .then(result => {
       res.status(200).json({
@@ -62,10 +63,10 @@ exports.getAll = (req, res) => {
 
 // update product
 
-exports.updateProduct = (req, res) => {
+exports.updateClient = (req, res) => {
   const id = req.params.id;
-  const { name, price, quantity, imageUrl } = req.body;
-  Product.findByIdAndUpdate(id, { name, price, quantity, imageUrl }, { new: true })
+  const { fullName, phone, avatarUrl, note, address } = req.body;
+  Client.findByIdAndUpdate(id, { fullName, phone, avatarUrl, note, address }, { new: true })
     .exec()
     .then(result => {
       res.status(200).json({
@@ -83,7 +84,7 @@ exports.updateProduct = (req, res) => {
 // delete
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Product.findByIdAndRemove(id)
+  Client.findByIdAndRemove(id)
     .exec()
     .then(result => {
       res.status(200).json({

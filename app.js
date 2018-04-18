@@ -10,6 +10,9 @@ const { MONGOOSE_SECRET } = require('./api/utils/utils');
 // const uploadRoutes = require("./api/routes/upload");
 const userRoutes = require("./api/routes/user");
 const productRoutes = require("./api/routes/product");
+const shipperRoutes = require("./api/routes/shipper");
+const clientRoutes = require("./api/routes/client");
+const orderRoutes = require("./api/routes/order");
 
 mongoose.connect(`mongodb://hoale:${MONGOOSE_SECRET}@node-rest-api-shard-00-00-zjw5o.mongodb.net:27017,node-rest-api-shard-00-01-zjw5o.mongodb.net:27017,node-rest-api-shard-00-02-zjw5o.mongodb.net:27017/test?ssl=true&replicaSet=node-rest-api-shard-0&authSource=admin`,
   {
@@ -40,7 +43,9 @@ app.use((req, res, next) => {
 // app.use("/orders", orderRoutes);
 app.use("/user", userRoutes);
 app.use("/product", productRoutes);
-
+app.use("/shipper", shipperRoutes);
+app.use("/client", clientRoutes);
+app.use("/order", orderRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
@@ -53,7 +58,6 @@ app.use((error, req, res, next) => {
   res.json({
     error: {
       message: error.message,
-      test: 'FAILED'
     }
   });
 });
